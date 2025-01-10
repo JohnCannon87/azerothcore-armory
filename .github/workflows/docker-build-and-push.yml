@@ -15,27 +15,26 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-
+    
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
         node-version: '16'
-
+    
     - name: Install NPM dependencies
       run: npm install
 
     - name: Copy .env.example to .env
       run: cp .env.example .env
-
+    
     - name: Build Docker image
       run: |
         docker build -t ${{ secrets.DOCKER_USERNAME }}/azerothcore-armory:latest .
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-
+    
     - name: Log in to Docker Hub
-      run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
     - name: Push Docker image
       run: docker push ${{ secrets.DOCKER_USERNAME }}/azerothcore-armory:latest
